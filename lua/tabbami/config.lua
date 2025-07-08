@@ -51,8 +51,6 @@ M.defaults = {
   
   -- UI configuration
   highlight_group = "Comment",
-  accept_key = "<Tab>",
-  cancel_key = "<Esc>",
   
   -- Keymaps
   keymaps = {

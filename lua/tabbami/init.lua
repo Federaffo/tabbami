@@ -51,20 +51,23 @@ function M.setup_keymaps()
   
   -- Accept suggestion
   vim.keymap.set("i", keymaps.accept or "<Tab>", function()
-    return M.accept_suggestion()
-  end, { expr = true, noremap = true, silent = true })
+    if not M.accept_suggestion() then
+      -- If no suggestion to accept, perform default tab behavior
+      local tab_key = keymaps.accept or "<Tab>"
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(tab_key, true, true, true), "n", true)
+    end
+  end, { noremap = true, silent = true })
   
   -- Cancel suggestion
   vim.keymap.set("i", keymaps.cancel or "<Esc>", function()
     M.clear_suggestion()
-    return "<Esc>"
-  end, { expr = true, noremap = true, silent = true })
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, true, true), "n", true)
+  end, { noremap = true, silent = true })
   
   -- Manual trigger
   vim.keymap.set("i", keymaps.manual_trigger or "<C-Space>", function()
     M.complete()
-    return ""
-  end, { expr = true, noremap = true, silent = true })
+  end, { noremap = true, silent = true })
 end
 
 -- Debounced completion trigger
@@ -179,9 +182,9 @@ function M.accept_suggestion()
     -- Insert the suggestion
     vim.api.nvim_put({suggestion_text}, "l", true, true)
     
-    return ""
+    return true
   else
-    return M.config.accept_key
+    return false
   end
 end
 
